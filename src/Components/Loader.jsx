@@ -1,4 +1,4 @@
-import loaderi from '/src/assets/loader.gif'
+import loaderi from '/src/assets/loader2.gif'
 function Loader(){
 
     return (<>
