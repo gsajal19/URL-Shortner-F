@@ -2,6 +2,7 @@ import { useState } from "react";
 import QRCode from "react-qr-code";
 import Loader from "./Loader";
 
+
 function Showurl({URL,showLoader}) {
     const [copyAlert,setCopyAlert] = useState("");
     const copyToClipboard = () => {

@@ -16,7 +16,7 @@ function FormSection() {
 
         <div className=" w-full ">
           <h1 className="text-xl font-semibold text-center my-5">Your Short URL Is One Step Away-</h1>
-          <InputForm setShowURL={setShowURL} setURL={setURL} setShowLoader={setShowLoader}></InputForm>
+          <InputForm setShowURL={setShowURL} setURL={setURL} setShowLoader={setShowLoader} showLoader={showLoader}></InputForm>
           {showURL ? <Showurl  URL={URL} showLoader={showLoader}></Showurl> : <></>}
           
         </div>

@@ -1,50 +1,72 @@
 import { useState } from "react";
-import {nanoid} from 'nanoid'
-function InputForm({setShowURL,setURL,setShowLoader}) {
-  // Fixed the typo from 'validiy' to 'validity'
+import { nanoid } from "nanoid";
+
+function InputForm({ setShowURL, setURL, setShowLoader, showLoader }) {
   const [originalurl, setOriginalurl] = useState("");
   const [validity, setValidity] = useState("MINUTE");  // Corrected the typo here
 
-  // Handling the form submission
   const sendData = async (e) => {
+    e.preventDefault();
     setShowURL(true);
     setShowLoader(true);
 
-    e.preventDefault();
+    // URL validation and modification function
+    const validateAndSetUrl = (url) => {
+      let updatedUrl = url;
 
-    // Check if the selected validity is valid
-    if (validity === 'MINUTE' || validity === 'DAY' || validity === 'WEEK') {
+      // Check if the URL starts with "http://" or "https://"
+      if (!updatedUrl.startsWith("http://") && !updatedUrl.startsWith("https://")) {
+        updatedUrl = "http://" + updatedUrl;  // Prepend "http://" if missing
+      }
+
+      return updatedUrl;  // Return the updated URL
+    };
+
+    // Validate the URL first
+    const validatedUrl = validateAndSetUrl(originalurl);
+
+    // If the URL is valid and the interval is correct, proceed
+    if (validity === "MINUTE" || validity === "DAY" || validity === "WEEK") {
+      console.log(validatedUrl + " Before pass");
+
       const collectData = {
-        originalurl: originalurl,
-        intervaltype: validity, // interval type is now `validity` instead of the typo
-        interval: 1,
-        shortid: nanoid(10),  // Ideally, this should be dynamically generated
+        originalurl: validatedUrl,  // Use the validated URL
+        intervaltype: validity,
+        interval: 1,  // Example interval (you can adjust this logic)
+        shortid: nanoid(10),  // Dynamically generate a short ID
       };
 
+      console.log(validatedUrl + " After pass");
+
       try {
-        const data = await fetch("https://url-shortner-b.onrender.com/generate", {
-          body: JSON.stringify(collectData),
+        // Send the data to the server
+        const response = await fetch("https://url-shortner-b.onrender.com/generate", {
           method: "POST",
+          body: JSON.stringify(collectData),
           headers: {
             "Content-Type": "application/json",
           },
         });
 
         // Check if the response is OK
-        if (!data.ok) {
+        if (!response.ok) {
           throw new Error("Something went wrong with the request.");
         }
 
-        const result = await data.json();
+        // Parse the JSON response
+        const result = await response.json();
+
+        // Hide loader and set URL
         setShowLoader(false);
-        setURL(result.shorturl) 
-        setOriginalurl("");
-        setValidity("MINUTE");
+        setURL(result.shorturl);
+        setOriginalurl("");  // Reset the input field
+        setValidity("MINUTE");  // Reset validity to default
       } catch (error) {
         console.error("Error during fetch:", error);
       }
     } else {
       console.error("Invalid interval type selected.");
+      setShowLoader(false);
     }
   };
 
@@ -55,8 +77,9 @@ function InputForm({setShowURL,setURL,setShowLoader}) {
         <input
           type="text"
           value={originalurl}  // Correctly passing value from state
-          onChange={(e) => setOriginalurl(e.target.value)}  // Updating state on change
-          placeholder="https://example.xyz/123" required
+          onChange={(e) => setOriginalurl(e.target.value)}  // Update state on change
+          placeholder="https://example.xyz/123"
+          required
           className="w-1/3 border-b pb-2 border-violet-900 font-medium focus:outline-0 text-lg"
         />
 
@@ -75,7 +98,7 @@ function InputForm({setShowURL,setURL,setShowLoader}) {
         <input
           type="submit"
           value="Submit"
-          className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-3 py-1 rounded-md cursor-pointer"
+          className={`bg-blue-500 hover:bg-blue-600 text-white font-medium px-3 py-1 rounded-md  ${showLoader ? "cursor-not-allowed" : "cursor-pointer"}`}
         />
       </form>
     </>
