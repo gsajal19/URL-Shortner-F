@@ -36,3 +36,27 @@ Make sure you have the following installed on your machine:
 
    ```bash
    git clone https://github.com/your-username/url-shortner-f.git
+
+2. Navigate into the project directory:
+
+   ```bash
+   cd url-shortner-f
+
+3. Install the required dependencies:
+
+   ```bash
+    npm install
+
+4. Start the development server:
+
+   ```bash
+   npm start
+
+
+The application will be available at http://localhost:3000.
+
+### Deployment
+
+This project is deployed on Render, and you can access the live version of the application at:
+
+**https://url-shortner-f.onrender.com/**
